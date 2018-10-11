@@ -49,7 +49,8 @@ class Game extends React.Component {
     this.state = {
       history: [
         {
-          squares: Array(9).fill(null)
+          squares: Array(9).fill(null),
+          colRow: null
         }
       ],
       stepNumber: 0,
@@ -61,6 +62,9 @@ class Game extends React.Component {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
+    const coordinates = findColRow(i)
+    const colRowString = '(' + coordinates.colNbr + ',' + coordinates.rowNbr + ')';
+
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
@@ -68,7 +72,8 @@ class Game extends React.Component {
     this.setState({
       history: history.concat([
         {
-          squares: squares
+          squares: squares,
+          colRow: colRowString
         }
       ]),
       stepNumber: history.length,
@@ -89,9 +94,9 @@ class Game extends React.Component {
     const winner = calculateWinner(current.squares);
 
     const moves = history.map((step, move) => {
-      const desc = move ?
-        'Go to move #' + move :
-        'Go to game start';
+      const desc = move?
+        'Go to Move ' + move + ' at ' + this.state.history[move].colRow:
+        'Go to Game Start';
       return (
         <li key={move}>
           <button onClick={() => this.jumpTo(move)}>{desc}</button>
@@ -113,10 +118,10 @@ class Game extends React.Component {
     if (winner) {
       status = "Winner: " + winner;
     } else if (draw) {
-      status = "Draw: No one wins";
+      status = "Draw: No One wins";
     }
       else {
-      status = "Next player: " + (this.state.xIsNext ? "X" : "O");
+      status = "Next Player: " + (this.state.xIsNext ? "X" : "O");
     }
 
     return (
@@ -158,4 +163,19 @@ function calculateWinner(squares) {
     }
   }
   return null;
+}
+
+function findColRow(i) {
+  let col; let row;
+  if (i === 0) { col = 1; row = 1; }
+  else if (i === 1) { col = 2; row = 1; }
+  else if (i === 2) { col = 3; row = 1; }
+  else if (i === 3) { col = 1; row = 2; }
+  else if (i === 4) { col = 2; row = 2; }
+  else if (i === 5) { col = 3; row = 2; }
+  else if (i === 6) { col = 1; row = 3; }
+  else if (i === 7) { col = 2; row = 3; }
+  else if (i === 8) { col = 3; row = 3; }
+  else { col = 'x'; row = 'x'; }
+  return {colNbr: col, rowNbr: row}
 }
