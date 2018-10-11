@@ -99,10 +99,23 @@ class Game extends React.Component {
       );
     });
 
+    let draw;
+    for (let i = 0; i < current.squares.length; i++) {
+      if(current.squares[i] == null) {
+        draw = false;
+        break;
+      }
+      else
+        draw = true;
+    }
+
     let status;
     if (winner) {
       status = "Winner: " + winner;
-    } else {
+    } else if (draw) {
+      status = "Draw: No one wins";
+    }
+      else {
       status = "Next player: " + (this.state.xIsNext ? "X" : "O");
     }
 
@@ -116,7 +129,7 @@ class Game extends React.Component {
           />
         </div>
         <div className="game-info">
-          <ol>{moves}</ol>
+          <ul>{moves}</ul>
         </div>
       </div>
     );
